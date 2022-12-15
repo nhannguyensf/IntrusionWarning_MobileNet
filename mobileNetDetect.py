@@ -13,10 +13,10 @@ class MobileNetDetect:
         self.model = cv2.dnn.readNetFromCaffe(self.config_file, self.weights_file)
         # read the class names
         self.classes = None
+        self.colors = None
         self.read_class_file()
         # bounding box color
         np.random.seed(111)  # set seed to ensure color is consistent
-        self.colors = np.random.uniform(0, 255, size=(len(self.classes), 3))
         # telegram sending settings
         self.last_alert = None
         self.alert_telegram_each = 5  # seconds
@@ -24,6 +24,7 @@ class MobileNetDetect:
     def read_class_file(self):
         with open(self.classnames_file, 'r') as f:
             self.classes = [line.strip() for line in f.readlines()]
+        self.colors = np.random.uniform(0, 255, size=(len(self.classes), 3))
 
     def dnn_detection_to_points(self, detection, width, height):
         x1 = int(detection[3] * width)
