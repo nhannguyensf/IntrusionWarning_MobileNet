@@ -19,7 +19,9 @@ class MobileNetDetect:
         np.random.seed(111)  # set seed to ensure color is consistent
         # telegram sending settings
         self.last_alert = None
-        self.alert_telegram_each = 5  # seconds
+        self.alert_telegram_each = 5  # send alert after some seconds
+        self.videoRecording = False
+        self.videoDuration = 0
 
     def read_class_file(self):
         with open(self.classnames_file, 'r') as f:
@@ -61,8 +63,8 @@ class MobileNetDetect:
         image = self.alert(image)
 
     def alert(self, img):
-        cv2.putText(img, "ALARM!!!!", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        # New thread to send telegram after 15 seconds
+        cv2.putText(img, "ALERT!!!!", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        # New thread to send telegram after some seconds
         if (self.last_alert is None) or ((datetime.datetime.utcnow() - self.last_alert).total_seconds() > self.alert_telegram_each):
             self.last_alert = datetime.datetime.utcnow()
             cv2.imwrite("alert.png", img)
@@ -85,8 +87,12 @@ class MobileNetDetect:
             # only keep strong detections
             if confidence > self.confidence:
                 idx = int(detection[1])  # class index
-                x1, y1, x2, y2 = self.dnn_detection_to_points(detection, width, height)
-                label = "%s: %.2f" % (self.classes[idx], confidence)
-                color = self.colors[idx]
-                self.draw_bounding_box_with_label(frame, x1, y1, x2, y2, label=label, color=color)
+                if idx == 15:  # if class index belong to "person"
+                    self.videoRecording = True
+                    x1, y1, x2, y2 = self.dnn_detection_to_points(detection, width, height)
+                    label = "%s: %.2f" % (self.classes[idx], confidence)
+                    color = self.colors[idx]
+                    self.draw_bounding_box_with_label(frame, x1, y1, x2, y2, label=label, color=color)
+            else:
+                self.videoRecording = False
         return frame
