@@ -21,4 +21,3 @@ while True:
     cv2.imshow("Intrusion Warning Application", frame)
 video.stop()
 cv2.destroyAllWindows()
-

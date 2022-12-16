@@ -19,7 +19,7 @@ class MobileNetDetect:
         np.random.seed(111)  # set seed to ensure color is consistent
         # telegram sending settings
         self.last_alert = None
-        self.alert_telegram_each = 5  # send alert after some seconds
+        self.alert_telegram_each = 3  # send alert after some seconds
         self.videoRecording = False
         self.videoDuration = 0
 
@@ -68,6 +68,14 @@ class MobileNetDetect:
         if (self.last_alert is None) or ((datetime.datetime.utcnow() - self.last_alert).total_seconds() > self.alert_telegram_each):
             self.last_alert = datetime.datetime.utcnow()
             cv2.imwrite("alert.png", img)
+            # width = int(300)
+            # height = int(300)
+            # while True:
+            #     writer = cv2.VideoWriter('outputVideo.mp4',  cv2.VideoWriter_fourcc(*'h264'), 20, (width, height))
+            #     writer.write(img)
+            #     if not self.videoRecording:
+            #         writer.release()
+            #         break
             thread = threading.Thread(target=send_telegram)
             thread.start()
         return img
