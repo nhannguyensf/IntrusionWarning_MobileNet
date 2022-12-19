@@ -17,7 +17,7 @@ while True:
     if key == ord('q'):
         break
     detect = True
-    # Hien anh ra man hinh
+    # Show to screen
     cv2.imshow("Intrusion Warning Application", frame)
 video.stop()
 cv2.destroyAllWindows()

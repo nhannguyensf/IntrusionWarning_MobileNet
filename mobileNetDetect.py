@@ -13,15 +13,14 @@ class MobileNetDetect:
         self.model = cv2.dnn.readNetFromCaffe(self.config_file, self.weights_file)
         # read the class names
         self.classes = None
-        self.colors = None
+        self.colors = None  # bounding box color
         self.read_class_file()
-        # bounding box color
         np.random.seed(111)  # set seed to ensure color is consistent
         # telegram sending settings
         self.last_alert = None
         self.alert_telegram_each = 3  # send alert after some seconds
         self.videoRecording = False
-        self.videoDuration = 0
+        # self.videoDuration = 0
 
     def read_class_file(self):
         with open(self.classnames_file, 'r') as f:
